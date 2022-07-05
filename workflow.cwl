@@ -2,11 +2,10 @@
 
 cwlVersion: v1.0
 class: Workflow
-label: <YOUR CHALLENGE> Evaluation
+label: CMRxMotion Task1 Evaluation
 doc: >
-  BRIEF DESCRIPTION ABOUT THE CHALLENGE, e.g.
-  This workflow will run and evaluate Docker submissions to the
-  Awesome Challenge (syn123). Metrics returned are x, y, z.
+  This workflow will run and evaluate prediction file submissions to 
+  Task1 of CMRxMotion Challenge.
 
 requirements:
   - class: StepInputExpressionRequirement
@@ -33,7 +32,7 @@ steps:
         source: "#submitterUploadSynId"
       # TODO: replace `valueFrom` with the admin user ID or admin team ID
       - id: principalid
-        valueFrom: "3379097"
+        valueFrom: "3452092"
       - id: permissions
         valueFrom: "download"
       - id: synapse_config

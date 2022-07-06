@@ -18,7 +18,7 @@ requirements:
         except:
             import os
             os.system("pip3 install pandas")
-            os.system("echo python --version")
+            os.system("which python3")
         import pandas as pd
         parser = argparse.ArgumentParser()
         parser.add_argument("-r", "--results", required=True, help="validation results")

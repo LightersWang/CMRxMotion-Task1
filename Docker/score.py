@@ -9,9 +9,9 @@ import sklearn.metrics as metrics
 def get_args():
     """Set up command-line interface and get arguments."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--submissionfile", required=True, help="Submission File")
-    parser.add_argument("-g", "--goldstandard", required=True, help="Goldstandard for scoring")
-    parser.add_argument("-r", "--results", required=True, default="results.json", help="Scoring results")
+    parser.add_argument("-f", "--submissionfile", type=str, required=True, help="Submission File")
+    parser.add_argument("-g", "--goldstandard", type=str,required=True, help="Goldstandard for scoring")
+    parser.add_argument("-r", "--results", type=str, required=True, default="results.json", help="Scoring results")
     return parser.parse_args()
 
 
@@ -21,7 +21,7 @@ def cal_score_tsk1(gt, pred):
 
     result = {
         'acc': acc,
-        'kappa': kappa,
+        'kappa': kappa
     }
 
     return result

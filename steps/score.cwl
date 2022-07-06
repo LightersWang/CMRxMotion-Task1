@@ -29,7 +29,6 @@ outputs:
 
 baseCommand: score.py
 arguments:
-  - valueFrom: score.py
   - prefix: -f
     valueFrom: $(inputs.input_file.path)
   - prefix: -g

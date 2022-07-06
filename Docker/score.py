@@ -1,7 +1,7 @@
- #!/usr/bin python3
+ #!/usr/bin/env python3
 
-import json
 import argparse
+import json
 import pandas as pd
 import sklearn.metrics as metrics
 

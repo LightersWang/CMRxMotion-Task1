@@ -8,111 +8,49 @@ the same, with the exception of one column name, where:
 
 import json
 import argparse
-
 import pandas as pd
 
-COLNAMES = {
-    "1": ['participant', 'was_preterm', 'probability'],
-    "2": ['participant', 'was_early_preterm', 'probability']
-}
+# COLNAMES = {
+#     "1": ['participant', 'was_preterm', 'probability'],
+#     "2": ['participant', 'was_early_preterm', 'probability']
+# }
 
 
 def get_args():
     """Set up command-line interface and get arguments."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--predictions_file",
-                        type=str, required=True)
-    parser.add_argument("-g", "--goldstandard_file",
-                        type=str, required=True)
-    parser.add_argument("-t", "--task", type=str, default="1")
-    parser.add_argument("-o", "--output", type=str)
+    parser.add_argument("-r", "--results", required=True, help="validation results")
+    parser.add_argument("-e", "--entity_type", required=True, help="synapse entity type downloaded")
+    parser.add_argument("-s", "--submission_file", help="Submission File")
     return parser.parse_args()
-
-
-def check_colnames(pred, task):
-    """Check for expected columns."""
-    expected_columns = COLNAMES[task]
-    if set(pred.columns) != set(expected_columns):
-        return (
-            f"Invalid columns: {pred.columns.to_list()}. "
-            f"Expecting: {expected_columns}"
-        )
-    return ""
-
-
-def check_dups(pred):
-    """Check for duplicate participant IDs."""
-    duplicates = pred.duplicated(subset=['participant'])
-    if duplicates.any():
-        return (
-            f"Found {duplicates.sum()} duplicate participant ID(s): "
-            f"{pred[duplicates].participant.to_list()}"
-        )
-    return ""
-
-
-def check_missing(gold, pred):
-    """Check for missing participant IDs."""
-    pred.set_index('participant', inplace=True)
-    missing_rows = gold.index.difference(pred.index)
-    if missing_rows.any():
-        return (
-            f"Found {missing_rows.shape[0]} missing participant ID(s): "
-            f"{missing_rows.to_list()}"
-        )
-    return ""
-
-
-def check_values(pred):
-    """Check that predictions column is binary."""
-    if not pred.iloc[:, 0].isin([0, 1]).all():
-        return f"'{pred.columns[0]}' column should only contain 0 and 1."
-    return ""
-
-
-def validate(gold_file, pred_file, task_number):
-    """Validate predictions file against goldstandard."""
-    errors = []
-
-    gold = pd.read_csv(gold_file,
-                       usecols=COLNAMES[task_number],
-                       index_col="participant")
-    pred = pd.read_csv(pred_file)
-
-    errors.append(check_colnames(pred, task_number))
-    errors.append(check_dups(pred))
-    errors.append(check_missing(gold, pred))
-    errors.append(check_values(pred))
-    return errors
 
 
 def main():
     """Main function."""
     args = get_args()
 
-    invalid_reasons = validate(
-        gold_file=args.goldstandard_file,
-        pred_file=args.predictions_file,
-        task_number=args.task
-    )
-
-    status = "INVALID" if invalid_reasons else "VALIDATED"
-    invalid_reasons = "\n".join(filter(None, invalid_reasons))
-
-    # truncate validation errors if >500 (character limit for sending email)
-    if len(invalid_reasons) > 500:
-        invalid_reasons = invalid_reasons[:496] + "..."
-    res = json.dumps({
-        "submission_status": status,
-        "submission_errors": invalid_reasons
-    })
-
-    if args.output:
-        with open(args.output, "w") as out:
-            out.write(res)
+    if args.submission_file is None:
+            prediction_file_status = "INVALID"
+            invalid_reasons = ['Expected FileEntity type but found ' + args.entity_type]
     else:
-        print(res)
+        required_shape = (160, 1)
+        invalid_reasons = []
+        prediction_file_status = "VALIDATED"
+        try:
+            submission_df = pd.read_csv(args.submission_file, index_col=0)
+            if not (submission_df.shape == required_shape):
+                invalid_reasons.append(f"Submission csv is not in right shape (i.e. {required_shape})")
+                invalid_reasons.append(f"Actual shape is {submission_df.shape}")
+                prediction_file_status = "INVALID"
+        except:
+            invalid_reasons.append("Cannot open submission file with pandas.read_csv()")
+            invalid_reasons.append(f"Path is {args.submission_file}")
+            prediction_file_status = "INVALID"
+    result = {'submission_errors': "\n".join(invalid_reasons),
+                'submission_status': prediction_file_status}
+    with open(args.results, 'w') as o:
+        o.write(json.dumps(result))
 
 
 if __name__ == "__main__":
-    main()
+    main()    

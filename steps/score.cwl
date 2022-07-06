@@ -10,7 +10,7 @@ requirements:
     listing:
     - entryname: score.py
       entry: |
-        #!/usr/bin/env python
+        #!/usr/bin python3
         import argparse
         import json
         try:

@@ -31,7 +31,7 @@ outputs:
     outputEval: $(JSON.parse(self[0].contents)['submission_errors'])
     loadContents: true
 
-baseCommand: validate.py
+baseCommand: ["python3", "validate.py"]
 arguments:
 - prefix: -s
   valueFrom: $(inputs.input_file)

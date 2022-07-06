@@ -27,7 +27,7 @@ outputs:
       outputEval: $(JSON.parse(self[0].contents)['submission_status'])
       loadContents: true
 
-baseCommand: score.py
+baseCommand: ["python3", "score.py"]
 arguments:
   - prefix: -f
     valueFrom: $(inputs.input_file.path)

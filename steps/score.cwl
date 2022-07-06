@@ -40,4 +40,4 @@ arguments:
 
 hints:
   DockerRequirement:
-    dockerPull: validation:latest
+    dockerPull: docker.synapse.org/syn32407769/valid-repo:latest

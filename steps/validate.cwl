@@ -13,12 +13,6 @@ requirements:
         #!/usr/bin python3
         import argparse
         import json
-        try:
-            import pandas
-        except:
-            import os
-            os.system("pip3 install pandas")
-            os.system("which python3")
         import pandas as pd
         parser = argparse.ArgumentParser()
         parser.add_argument("-r", "--results", required=True, help="validation results")

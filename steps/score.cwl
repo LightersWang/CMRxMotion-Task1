@@ -13,11 +13,7 @@ requirements:
         #!/usr/bin python3
         import argparse
         import json
-        try:
-            import sklearn
-        except:
-            import os
-            os.system("pip3 install sklearn")
+        import pandas as pd
         import sklearn.metrics as metrics
         parser = argparse.ArgumentParser()
         parser.add_argument("-f", "--submissionfile", required=True, help="Submission File")

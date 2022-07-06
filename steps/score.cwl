@@ -6,7 +6,6 @@ label: Score predictions file
 
 requirements:
   - class: InlineJavascriptRequirement
-  - class: InitialWorkDirRequirement
 
 inputs:
   - id: input_file

@@ -17,7 +17,7 @@ requirements:
             import sklearn
         except:
             import os
-            os.system("pip install sklearn")
+            os.system("pip3 install sklearn")
         import sklearn.metrics as metrics
         parser = argparse.ArgumentParser()
         parser.add_argument("-f", "--submissionfile", required=True, help="Submission File")

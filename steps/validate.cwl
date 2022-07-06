@@ -13,6 +13,12 @@ requirements:
         #!/usr/bin/env python
         import argparse
         import json
+        try:
+            import pandas
+        except:
+            import os
+            os.system("pip install pandas")
+        import pandas as pd
         parser = argparse.ArgumentParser()
         parser.add_argument("-r", "--results", required=True, help="validation results")
         parser.add_argument("-e", "--entity_type", required=True, help="synapse entity type downloaded")
@@ -24,12 +30,18 @@ requirements:
             prediction_file_status = "INVALID"
             invalid_reasons = ['Expected FileEntity type but found ' + args.entity_type]
         else:
-            with open(args.submission_file,"r") as sub_file:
-                message = sub_file.read()
+            required_shape = (160, 1)
             invalid_reasons = []
             prediction_file_status = "VALIDATED"
-            if not message.startswith("test"):
-                invalid_reasons.append("Submission must have test column")
+            try:
+                submission_df = pd.read_csv(args.submission_file, index_col=0)
+                if not (submission_df.shape == required_shape):
+                    invalid_reasons.append(f"Submission csv is not in right shape (i.e. {required_shape})")
+                    invalid_reasons.append(f"Actual shape is {submission_df.shape}")
+                    prediction_file_status = "INVALID"
+            except:
+                invalid_reasons.append("Cannot open submission file with pandas.read_csv()")
+                invalid_reasons.append(f"Path is {args.submission_file}")
                 prediction_file_status = "INVALID"
         result = {'submission_errors': "\n".join(invalid_reasons),
                   'submission_status': prediction_file_status}

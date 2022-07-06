@@ -60,7 +60,7 @@ outputs:
       outputEval: $(JSON.parse(self[0].contents)['submission_status'])
       loadContents: true
 
-baseCommand: python
+baseCommand: python3
 arguments:
   - valueFrom: score.py
   - prefix: -f

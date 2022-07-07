@@ -38,7 +38,7 @@ arguments:
 - prefix: -s
   valueFrom: $(inputs.input_file)
 - prefix: -g
-  valueFrom: $(inputs.goldstandard.path)
+  valueFrom: $(inputs.goldstandard)
 - prefix: -e
   valueFrom: $(inputs.entity_type)
 - prefix: -r

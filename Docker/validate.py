@@ -18,11 +18,11 @@ import pandas as pd
 
 def get_args():
     """Set up command-line interface and get arguments."""
+    parser.add_argument("-s", "--submission_file", help="Submission File")
+    parser.add_argument("-g", "--goldstandard", required=True, help="Goldstandard for scoring")
+    parser.add_argument("-e", "--entity_type", required=True, help="synapse entity type downloaded")
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--results", required=True, help="validation results")
-    parser.add_argument("-g", "--goldstandard", type=str,required=True, help="Goldstandard for scoring")
-    parser.add_argument("-e", "--entity_type", required=True, help="synapse entity type downloaded")
-    parser.add_argument("-s", "--submission_file", help="Submission File")
     return parser.parse_args()
 
 

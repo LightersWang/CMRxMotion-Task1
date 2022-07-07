@@ -17,7 +17,7 @@ def get_args():
 
 def cal_score_tsk1(gt, pred):
     acc = metrics.accuracy_score(gt, pred)
-    kappa = metrics.cohen_kappa_score(gt, pred)
+    kappa = metrics.cohen_kappa_score(gt, pred, weights='linear')
 
     result = {
         'acc': acc,

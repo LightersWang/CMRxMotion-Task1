@@ -70,6 +70,8 @@ steps:
     in:
       - id: input_file
         source: "#download_submission/filepath"
+      - id: goldstandard
+        source: "#download_goldstandard/filepath"
       - id: entity_type
         source: "#download_submission/entity_type"
     out:

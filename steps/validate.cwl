@@ -10,6 +10,8 @@ requirements:
 inputs:
 - id: input_file
   type: File
+- id: goldstandard
+  type: File
 - id: entity_type
   type: string
 
@@ -35,6 +37,8 @@ baseCommand: ["python3", "/usr/local/bin/validate.py"]
 arguments:
 - prefix: -s
   valueFrom: $(inputs.input_file)
+- prefix: -g
+  valueFrom: $(inputs.goldstandard.path)
 - prefix: -e
   valueFrom: $(inputs.entity_type)
 - prefix: -r

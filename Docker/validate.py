@@ -20,6 +20,7 @@ def get_args():
     """Set up command-line interface and get arguments."""
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--results", required=True, help="validation results")
+    parser.add_argument("-g", "--goldstandard", type=str,required=True, help="Goldstandard for scoring")
     parser.add_argument("-e", "--entity_type", required=True, help="synapse entity type downloaded")
     parser.add_argument("-s", "--submission_file", help="Submission File")
     return parser.parse_args()
@@ -33,21 +34,35 @@ def main():
             prediction_file_status = "INVALID"
             invalid_reasons = ['Expected FileEntity type but found ' + args.entity_type]
     else:
-        required_shape = (160, 1)
+        required_shape = (40, 2)
         invalid_reasons = []
         prediction_file_status = "VALIDATED"
+
+        # judge if csv file
         try:
-            submission_df = pd.read_csv(args.submission_file, index_col=0)
+            submission_df = pd.read_csv(args.submission_file)
             if not (submission_df.shape == required_shape):
                 invalid_reasons.append(f"Submission csv is not in right shape (i.e. {required_shape})")
                 invalid_reasons.append(f"Actual shape is {submission_df.shape}")
                 prediction_file_status = "INVALID"
+            # if nan eexist
+            for col in range(2):
+                if submission_df.iloc[:, col].isnull().any():
+                    invalid_reasons.append(f"Column {col} of submission csv file contains NaN value")
+                    prediction_file_status = "INVALID"
+
+            # if match gold standard ImageName
+            gt_df = pd.read_csv(args.goldstandard)
+            if not (set(gt_df.iloc[:, 0].tolist()) == set(submission_df.iloc[:, 0].tolist())):
+                invalid_reasons.append(f"Image name in submission csv file doesn't match standard submission.")
+                prediction_file_status = "INVALID"
+
         except:
             invalid_reasons.append("Cannot open submission file with pandas.read_csv()")
             invalid_reasons.append(f"Path is {args.submission_file}")
             prediction_file_status = "INVALID"
     result = {'submission_errors': "\n".join(invalid_reasons),
-                'submission_status': prediction_file_status}
+              'submission_status': prediction_file_status}
     with open(args.results, 'w') as o:
         o.write(json.dumps(result))
 

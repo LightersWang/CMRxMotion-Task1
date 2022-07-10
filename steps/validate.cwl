@@ -46,4 +46,4 @@ arguments:
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn32407333/valid-repo:latest
+    dockerPull: docker.synapse.org/syn32407772/valid-repo:latest
